@@ -27,6 +27,20 @@
       "email": "t@gmail.com",
       "passwordHash": "$2a$10$1a2XAHTg02MgeLMIvjG6HegnyuQkcRc5gm8fFnVVoRFFjUHeYrwVy",
       "createdAt": "2026-07-08T05:33:55.884Z"
+    },
+    {
+      "id": "3d9b39fc-2f79-4eb4-a40a-834f5ab7caab",
+      "name": "Test Tester",
+      "email": "tester_gemini_val_1@test.com",
+      "passwordHash": "$2a$10$lGvUY8Jp7EsO15dnfbsHs.B4yLLa/pcWl/4wc3PresZCTNaGkHOFy",
+      "createdAt": "2026-07-09T04:37:58.266Z"
+    },
+    {
+      "id": "4a31e430-22e1-48f7-9dc5-a67381693afe",
+      "name": "Deep",
+      "email": "deep@gmail.com",
+      "passwordHash": "$2a$10$v9CkS/XGaoD.WkVkyqDuNehBobctdFkzogb3zd./mDU1r0Oqc82Qa",
+      "createdAt": "2026-07-09T08:45:07.474Z"
     }
   ]
 }

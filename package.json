@@ -1,0 +1,10 @@
+{
+  "name": "linked-agent-root",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "postinstall": "npm install --prefix server",
+    "build": "echo 'Root build completed'",
+    "start": "npm start --prefix server"
+  }
+}

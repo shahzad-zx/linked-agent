@@ -41,6 +41,27 @@
       "email": "deep@gmail.com",
       "passwordHash": "$2a$10$v9CkS/XGaoD.WkVkyqDuNehBobctdFkzogb3zd./mDU1r0Oqc82Qa",
       "createdAt": "2026-07-09T08:45:07.474Z"
+    },
+    {
+      "id": "97d1addc-a9e4-487a-8587-edf81094e3f3",
+      "name": "asdf",
+      "email": "j@gmail.com",
+      "passwordHash": "$2a$10$aTmW/yIWQfayrZIVLsaVieXqfiQCUW3dc2pNqvWGKpFmtZ3olGQ5G",
+      "createdAt": "2026-07-12T07:00:14.652Z"
+    },
+    {
+      "id": "28fcb73d-3daa-4140-9654-3d88b86f8445",
+      "name": "EE2E Tester",
+      "email": "test_val_790@test.com",
+      "passwordHash": "$2a$10$OlfR0mIy/foOb67zJZVAL.tpXFfVz.8ACcK6xjzpVsDdssmwfrQQC",
+      "createdAt": "2026-07-12T14:27:06.360Z"
+    },
+    {
+      "id": "cf40fb68-de20-4408-aed7-c2fbdeaf7e49",
+      "name": "asdf",
+      "email": "tr@gmail.com",
+      "passwordHash": "$2a$10$92/C2lAw.0voAgRuNgw9gO.iJDsClTOf0lYlkWfbBKEV94H1nLS1y",
+      "createdAt": "2026-07-12T19:31:47.668Z"
     }
   ]
 }

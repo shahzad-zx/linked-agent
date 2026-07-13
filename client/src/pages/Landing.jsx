@@ -108,8 +108,7 @@ export default function Landing() {
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <Link to="/login" className="btn-secondary" style={{ padding: "9px 16px" }}>Log in</Link>
-          <Link to="/signup" className="btn-primary" style={{ padding: "9px 16px" }}>Sign up free</Link>
+          <Link to="/dashboard" className="btn-primary" style={{ padding: "9px 16px" }}>Go to Dashboard</Link>
         </div>
       </nav>
 
@@ -131,7 +130,7 @@ export default function Landing() {
             what it'll look like as a post before you ever copy a word of it.
           </p>
           <div style={{ display: "flex", gap: 12 }}>
-            <Link to="/signup" className="btn-primary" style={{ padding: "14px 26px", fontSize: 15 }}>
+            <Link to="/dashboard" className="btn-primary" style={{ padding: "14px 26px", fontSize: 15 }}>
               <Sparkles size={17} /> Start for free
             </Link>
             <a href="#how-it-works" className="btn-secondary" style={{ padding: "14px 22px", fontSize: 15 }}>
@@ -243,8 +242,8 @@ export default function Landing() {
           <CheckCircle2 size={28} color="var(--amber)" style={{ marginBottom: 16 }} />
           <h2 style={{ fontSize: 28, fontWeight: 700, marginBottom: 12 }}>Stop staring at the blank post box.</h2>
           <p style={{ color: "var(--ink-dim)", marginBottom: 28 }}>Free account, first draft in under a minute.</p>
-          <Link to="/signup" className="btn-primary" style={{ padding: "14px 28px", fontSize: 15 }}>
-            <Sparkles size={17} /> Create your free account <ArrowRight size={16} />
+          <Link to="/dashboard" className="btn-primary" style={{ padding: "14px 28px", fontSize: 15 }}>
+            <Sparkles size={17} /> Go to Dashboard <ArrowRight size={16} />
           </Link>
         </div>
       </section>

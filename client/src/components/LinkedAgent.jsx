@@ -20,7 +20,6 @@ const TONES = [
 async function callBackend(history) {
   const response = await fetch(`${API_URL}/api/generate`, {
     method: "POST",
-    credentials: "include",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ history }),
   });
@@ -57,6 +56,12 @@ export default function LinkedAgent() {
     setError("");
     try {
       const result = await callBackend(nextHistory);
+      
+      // Clean up whitespace from each line to prevent unwanted indentation
+      if (result && result.post) {
+        result.post = result.post.split('\n').map(line => line.trim()).join('\n');
+      }
+      
       setPost(result);
       setHistory([...nextHistory, { role: "assistant", content: JSON.stringify(result) }]);
       setStage("preview");

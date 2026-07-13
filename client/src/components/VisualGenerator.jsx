@@ -32,10 +32,28 @@ const VISUAL_TYPES = [
     { id: "roadmap", label: "Learning Roadmap", hint: "Step-by-step skill path or milestones", icon: Route, color: "#EC4899" },
 ];
 
-async function callVisualAPI(type, idea) {
-    const response = await fetch(`${API_URL}/api/generate-visual`, {
+
+// comment
+
+// async function callVisualAPI(type, idea) {
+//     const response = await fetch(`${API_URL}/api/generate-visual`, {
+//         method: "POST",
+//         credentials: "include",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify({ type, idea }),
+//     });
+//     const data = await response.json();
+//     if (!response.ok) throw new Error(data.error || `Request failed (${response.status})`);
+//     return data;
+// }
+
+async function callVisualAPI(type, idea, visualType = "default") {
+    const endpoint = visualType === "visualizelearning"
+        ? `${API_URL}/api/generate-visual/visualizelearning`
+        : `${API_URL}/api/generate-visual`;
+
+    const response = await fetch(endpoint, {
         method: "POST",
-        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ type, idea }),
     });
@@ -58,13 +76,40 @@ export default function VisualGenerator() {
     const activeTypeObj = VISUAL_TYPES.find((vt) => vt.id === type) || VISUAL_TYPES[0];
     const typeColor = activeTypeObj.color;
 
+
+    // comment
+
+    // async function generate() {
+    //     if (!idea.trim()) return;
+    //     setStage("loading");
+    //     setError("");
+    //     setSvgMarkup("");
+    //     try {
+    //         const data = await callVisualAPI(type, idea);
+    //         setResult(data);
+
+    //         if (type === "flowchart") {
+    //             renderCounter.current += 1;
+    //             const id = `mermaid-diagram-${renderCounter.current}`;
+    //             const { svg } = await mermaid.render(id, data.mermaid);
+    //             setSvgMarkup(svg);
+    //         }
+    //         setStage("ready");
+    //     } catch (e) {
+    //         setError(e.message || "Something went wrong generating that.");
+    //         setStage("error");
+    //     }
+    // }
+
     async function generate() {
         if (!idea.trim()) return;
         setStage("loading");
         setError("");
         setSvgMarkup("");
         try {
-            const data = await callVisualAPI(type, idea);
+            // Pass visualizelearning for cheatsheets, default for others
+            const visualType = type === "cheatsheet" ? "visualizelearning" : "default";
+            const data = await callVisualAPI(type, idea, visualType);
             setResult(data);
 
             if (type === "flowchart") {
@@ -257,30 +302,57 @@ export default function VisualGenerator() {
                     >
                         {/* Infographic Header */}
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", borderBottom: "1px solid #262635", paddingBottom: 16, marginBottom: 20 }}>
-                            <div>
-                                <h3 style={{ fontSize: 20, fontWeight: 800, color: "#FFFFFF", fontFamily: "'Space Grotesk', sans-serif", letterSpacing: "-0.02em", margin: 0 }}>
+                            <div style={{ flex: 1, marginRight: 16 }}>
+                                <h3 style={{ fontSize: type === "cheatsheet" ? 26 : 20, fontWeight: 800, color: "#FFFFFF", fontFamily: "'Space Grotesk', sans-serif", letterSpacing: "-0.02em", margin: 0, textTransform: type === "cheatsheet" ? "uppercase" : "none", lineHeight: 1.2 }}>
                                     {result.title}
                                 </h3>
                                 {result.subtitle && (
-                                    <p style={{ fontSize: 12, color: "#A0AEC0", marginTop: 4, margin: 0, fontFamily: "'Inter', sans-serif" }}>
+                                    <p style={{ fontSize: 12, color: "#A0AEC0", margin: "6px 0 0 0", fontFamily: "'Inter', sans-serif", maxWidth: "90%", lineHeight: 1.5 }}>
                                         {result.subtitle}
                                     </p>
                                 )}
                             </div>
-                            <div style={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: 6,
-                                background: "rgba(255, 255, 255, 0.04)",
-                                padding: "6px 12px",
-                                borderRadius: 8,
-                                border: "1px solid rgba(255, 255, 255, 0.08)",
-                            }}>
-                                <div style={{ width: 8, height: 8, borderRadius: "50%", background: typeColor }} />
-                                <span style={{ fontSize: 10, fontWeight: 700, color: "#E2E8F0", textTransform: "uppercase", letterSpacing: "0.05em", fontFamily: "'JetBrains Mono', monospace" }}>
-                                    {type}
-                                </span>
-                            </div>
+                            {type === "cheatsheet" && result.pills ? (
+                                <div style={{ display: "flex", flexDirection: "column", gap: 6, minWidth: 260, background: "rgba(255, 255, 255, 0.02)", padding: 12, borderRadius: 8, border: "1px solid #262635" }}>
+                                    {result.pills.map((pill, idx) => (
+                                        <div key={idx} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 11 }}>
+                                            <span style={{
+                                                display: "inline-flex",
+                                                alignItems: "center",
+                                                justifyContent: "center",
+                                                width: 18,
+                                                height: 18,
+                                                borderRadius: 4,
+                                                background: pill.color || typeColor,
+                                                color: "#000000",
+                                                fontWeight: 800,
+                                                fontSize: 9,
+                                                textTransform: "uppercase"
+                                            }}>
+                                                {pill.label ? pill.label[0] : "•"}
+                                            </span>
+                                            <span style={{ fontWeight: 700, color: "#FFFFFF" }}>{pill.label}</span>
+                                            <span style={{ color: "#718096" }}>→</span>
+                                            <span style={{ color: "#A0AEC0" }}>{pill.desc}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: 6,
+                                    background: "rgba(255, 255, 255, 0.04)",
+                                    padding: "6px 12px",
+                                    borderRadius: 8,
+                                    border: "1px solid rgba(255, 255, 255, 0.08)",
+                                }}>
+                                    <div style={{ width: 8, height: 8, borderRadius: "50%", background: typeColor }} />
+                                    <span style={{ fontSize: 10, fontWeight: 700, color: "#E2E8F0", textTransform: "uppercase", letterSpacing: "0.05em", fontFamily: "'JetBrains Mono', monospace" }}>
+                                        {type}
+                                    </span>
+                                </div>
+                            )}
                         </div>
 
                         {/* Infographic Content Renderers */}
@@ -332,50 +404,159 @@ export default function VisualGenerator() {
                         )}
 
                         {type === "cheatsheet" && (
-                            <div style={{
-                                display: "grid",
-                                gridTemplateColumns: result.sections?.length > 2 ? "repeat(auto-fit, minmax(280px, 1fr))" : "1fr",
-                                gap: 16,
-                                width: "100%"
-                            }}>
-                                {result.sections?.map((sect, i) => (
-                                    <div key={i} style={{
-                                        background: "#121217",
-                                        border: "1px solid #262635",
-                                        borderTop: `3px solid ${typeColor}`,
-                                        borderRadius: 8,
-                                        padding: 16,
-                                        display: "flex",
-                                        flexDirection: "column",
-                                        gap: 12
-                                    }}>
-                                        <h4 style={{ fontSize: 13, fontWeight: 700, color: "#FFFFFF", margin: 0, borderBottom: "1px solid #262635", paddingBottom: 8 }}>
-                                            {sect.name}
-                                        </h4>
-                                        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                                            {sect.items?.map((item, j) => (
-                                                <div key={j} style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-                                                    <span style={{ fontSize: 12, fontWeight: 600, color: "#CBD5E0" }}>{item.label}</span>
-                                                    {item.code && (
-                                                        <pre style={{
-                                                            margin: 0,
-                                                            padding: "8px 10px",
-                                                            background: "#08080C",
-                                                            border: "1px solid #232330",
-                                                            borderRadius: 6,
-                                                            overflowX: "auto",
-                                                            fontSize: 10,
-                                                            fontFamily: "'JetBrains Mono', monospace",
-                                                            lineHeight: 1.4,
-                                                        }}>
-                                                            {highlightCode(item.code)}
-                                                        </pre>
-                                                    )}
+                            <div style={{ display: "flex", flexDirection: "column", gap: 24, width: "100%" }}>
+                                {/* Flow / How it works */}
+                                {result.flow && (
+                                    <div>
+                                        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
+                                            <div style={{ flex: 1, height: 1, background: "#262635" }} />
+                                            <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", color: "#718096", textTransform: "uppercase" }}>How It Works</span>
+                                            <div style={{ flex: 1, height: 1, background: "#262635" }} />
+                                        </div>
+                                        <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
+                                            {result.flow.map((item, idx) => (
+                                                <div key={idx} style={{
+                                                    flex: 1,
+                                                    minWidth: 160,
+                                                    background: "#121217",
+                                                    border: "1px solid #262635",
+                                                    borderTop: `3px solid ${idx === 0 ? "#8B5CF6" : idx === 1 ? "#F59E0B" : idx === 2 ? "#10B981" : "#3B82F6"}`,
+                                                    borderRadius: 8,
+                                                    padding: "14px 16px",
+                                                    display: "flex",
+                                                    flexDirection: "column",
+                                                    gap: 6,
+                                                    position: "relative"
+                                                }}>
+                                                    <span style={{ fontSize: 10, fontWeight: 800, color: "#FFFFFF", textTransform: "uppercase", letterSpacing: "0.02em" }}>
+                                                        {item.step}. {item.name}
+                                                    </span>
+                                                    <span style={{ fontSize: 11, color: "#A0AEC0", lineHeight: 1.4 }}>
+                                                        {item.desc}
+                                                    </span>
                                                 </div>
                                             ))}
                                         </div>
                                     </div>
-                                ))}
+                                )}
+
+                                {/* Folder Structure & Code Implementation */}
+                                <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 8, marginBottom: 8 }}>
+                                    <div style={{ flex: 1, height: 1, background: "#262635" }} />
+                                    <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", color: "#718096", textTransform: "uppercase" }}>Folder Structure & Code Example</span>
+                                    <div style={{ flex: 1, height: 1, background: "#262635" }} />
+                                </div>
+
+                                <div style={{
+                                    display: "grid",
+                                    gridTemplateColumns: "1fr 2fr",
+                                    gap: 20,
+                                    width: "100%"
+                                }}>
+                                    {/* Left Column: Terminal Folder Structure */}
+                                    {result.folder_structure && (
+                                        <div style={{
+                                            background: "#08080C",
+                                            border: "1px solid #232330",
+                                            borderRadius: 10,
+                                            overflow: "hidden",
+                                            display: "flex",
+                                            flexDirection: "column"
+                                        }}>
+                                            {/* Terminal window controls header */}
+                                            <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "10px 14px", borderBottom: "1px solid #1A1A26", background: "#0D0D14" }}>
+                                                <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#FF5F56" }} />
+                                                <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#FFBD2E" }} />
+                                                <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#27C93F" }} />
+                                                <span style={{ fontSize: 10, color: "#718096", marginLeft: 6, fontFamily: "'JetBrains Mono', monospace" }}>project-layout</span>
+                                            </div>
+                                            <pre style={{
+                                                margin: 0,
+                                                padding: 16,
+                                                fontSize: 11,
+                                                fontFamily: "'JetBrains Mono', monospace",
+                                                color: "#A0AEC0",
+                                                lineHeight: 1.5,
+                                                overflowX: "auto"
+                                            }}>
+                                                {result.folder_structure}
+                                            </pre>
+                                        </div>
+                                    )}
+
+                                    {/* Right Column: Code Files */}
+                                    {result.files && (
+                                        <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+                                            {result.files.map((fileObj, idx) => (
+                                                <div key={idx} style={{
+                                                    background: "#121217",
+                                                    border: "1px solid #262635",
+                                                    borderRadius: 8,
+                                                    overflow: "hidden",
+                                                    display: "grid",
+                                                    gridTemplateColumns: "1fr 2fr",
+                                                    minHeight: 120
+                                                }}>
+                                                    {/* File Info Card */}
+                                                    <div style={{
+                                                        padding: 14,
+                                                        borderRight: "1px solid #262635",
+                                                        display: "flex",
+                                                        flexDirection: "column",
+                                                        gap: 6,
+                                                        background: "rgba(255, 255, 255, 0.01)"
+                                                    }}>
+                                                        <span style={{ fontSize: 11, fontWeight: 700, color: "#FFFFFF", wordBreak: "break-all" }}>
+                                                            {fileObj.file}
+                                                        </span>
+                                                        <span style={{ fontSize: 10, color: "#718096", textTransform: "uppercase", fontWeight: 700 }}>
+                                                            {fileObj.name}
+                                                        </span>
+                                                        <span style={{ fontSize: 10, color: "#CBD5E0", lineHeight: 1.4 }}>
+                                                            {fileObj.desc}
+                                                        </span>
+                                                    </div>
+                                                    {/* File Code Block */}
+                                                    <pre style={{
+                                                        margin: 0,
+                                                        padding: 14,
+                                                        background: "#08080C",
+                                                        fontSize: 10,
+                                                        fontFamily: "'JetBrains Mono', monospace",
+                                                        lineHeight: 1.4,
+                                                        overflowX: "auto",
+                                                        display: "flex",
+                                                        alignItems: "center"
+                                                    }}>
+                                                        <div style={{ width: "100%" }}>
+                                                            {highlightCode(fileObj.code)}
+                                                        </div>
+                                                    </pre>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Key Takeaway Footer */}
+                                {result.takeaway && (
+                                    <div style={{
+                                        background: "rgba(16, 185, 129, 0.04)",
+                                        border: "1px solid rgba(16, 185, 129, 0.15)",
+                                        borderRadius: 8,
+                                        padding: "12px 16px",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        gap: 12,
+                                        marginTop: 8
+                                    }}>
+                                        <span style={{ fontSize: 16 }}>💡</span>
+                                        <span style={{ fontSize: 11, color: "#CBD5E0", lineHeight: 1.4 }}>
+                                            <strong style={{ color: "#10B981" }}>KEY TAKEAWAY: </strong>
+                                            {result.takeaway}
+                                        </span>
+                                    </div>
+                                )}
                             </div>
                         )}
 

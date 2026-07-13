@@ -1,7 +1,7 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext.jsx";
-import ProtectedRoute from "./components/ProtectedRoute.jsx";
+
 import Landing from "./pages/Landing.jsx";
 import Login from "./pages/Login.jsx";
 import Signup from "./pages/Signup.jsx";
@@ -19,14 +19,7 @@ export default function App() {
         <Route path="/about" element={<About />} />
         <Route path="/services" element={<Service />} />
         <Route path="/service" element={<Service />} />
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
     </AuthProvider>
   );
